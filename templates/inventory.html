@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory | SupplyChain Tracker</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <i class="fa-solid fa-truck-fast"></i>
+        SupplyChain
+    </div>
+
+    <nav>
+
+        <a href="/">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/shipments">
+            <i class="fa-solid fa-box"></i>
+            <span>Shipments</span>
+        </a>
+
+        <a href="/track">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Track Shipment</span>
+        </a>
+
+        <a href="/inventory" class="active">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="/settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+</div>
+
+<div class="main-content">
+
+    <div class="topbar">
+
+        <div>
+            <h1>Inventory</h1>
+            <p>Monitor stock levels and inventory items</p>
+        </div>
+
+        <button class="add-btn" onclick="openInventoryModal()">
+            <i class="fa-solid fa-plus"></i>
+            Add Item
+        </button>
+
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <h3>Total Items</h3>
+            <div class="number">{{ total_items }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3>In Stock</h3>
+            <div class="number">{{ in_stock }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Low Stock</h3>
+            <div class="number">{{ low_stock }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-warehouse"></i>
+            <h3>Inventory Records</h3>
+            <div class="number">{{ inventory_items|length }}</div>
+        </div>
+
+    </div>
+
+    <div class="page-panel">
+
+        <h2>Inventory Overview</h2>
+
+        {% if inventory_items %}
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in inventory_items %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ item["item_name"] }}</strong>
+                    </td>
+
+                    <td>{{ item["category"] }}</td>
+
+                    <td>{{ item["quantity"] }}</td>
+
+                    <td>
+
+                        <span class="status
+                            {% if item['status'] == 'In Stock' %}
+                                delivered
+                            {% else %}
+                                delayed
+                            {% endif %}
+                        ">
+                            {{ item["status"] }}
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <i class="fa-solid fa-box-open"></i>
+
+            <h3>No Inventory Items</h3>
+
+            <p>Add your first inventory item to start tracking stock.</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<div class="modal" id="inventoryModal">
+
+    <div class="modal-content">
+
+        <h2>Add Inventory Item</h2>
+
+        <form action="/add-inventory" method="POST">
+
+            <input
+                type="text"
+                name="item_name"
+                placeholder="Item Name"
+                required
+            >
+
+            <input
+                type="text"
+                name="category"
+                placeholder="Category"
+                required
+            >
+
+            <input
+                type="number"
+                name="quantity"
+                placeholder="Quantity"
+                min="1"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeInventoryModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-shipment-btn">
+                    Add Item
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function openInventoryModal() {
+    document.getElementById("inventoryModal").style.display = "flex";
+}
+
+function closeInventoryModal() {
+    document.getElementById("inventoryModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+
+    const modal = document.getElementById("inventoryModal");
+
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+
+};
+
+</script>
+
+</body>
+</html>

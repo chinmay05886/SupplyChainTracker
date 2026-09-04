@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SupplyChain Tracker</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <i class="fa-solid fa-truck-fast"></i>
+        SupplyChain
+    </div>
+
+    <nav>
+        <a href="/" class="active">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/shipments">
+            <i class="fa-solid fa-box"></i>
+            <span>Shipments</span>
+        </a>
+
+        <a href="/track">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Track Shipment</span>
+        </a>
+
+        <a href="/inventory">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="/settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+</div>
+
+<div class="main-content">
+
+    <div class="topbar">
+        <div>
+            <h1>Supply Chain Dashboard</h1>
+            <p>Monitor shipments and logistics activity</p>
+        </div>
+
+        <a href="/shipments">
+            <button class="add-btn">
+                <i class="fa-solid fa-box"></i>
+                View Shipments
+            </button>
+        </a>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <i class="fa-solid fa-box"></i>
+            <h3>Total Shipments</h3>
+            <div class="number">{{ total }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-truck"></i>
+            <h3>In Transit</h3>
+            <div class="number">{{ in_transit }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3>Delivered</h3>
+            <div class="number">{{ delivered }}</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Delayed</h3>
+            <div class="number">{{ delayed }}</div>
+        </div>
+
+    </div>
+
+    <div class="content-grid">
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <h2>Recent Shipments</h2>
+                <span>Latest activity</span>
+            </div>
+
+            {% if shipments %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Tracking ID</th>
+                        <th>Customer</th>
+                        <th>Destination</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for shipment in shipments %}
+
+                    <tr>
+                        <td>
+                            <strong>{{ shipment["tracking_id"] }}</strong>
+                        </td>
+
+                        <td>{{ shipment["customer"] }}</td>
+
+                        <td>{{ shipment["destination"] }}</td>
+
+                        <td>
+                            <span class="status
+                                {% if shipment['status'] == 'In Transit' %}
+                                    in-transit
+                                {% elif shipment['status'] == 'Delivered' %}
+                                    delivered
+                                {% elif shipment['status'] == 'Delayed' %}
+                                    delayed
+                                {% else %}
+                                    pending
+                                {% endif %}
+                            ">
+                                {{ shipment["status"] }}
+                            </span>
+                        </td>
+
+                        <td>{{ shipment["date"] }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="empty-state">
+                <i class="fa-solid fa-box-open"></i>
+                <h3>No shipments found</h3>
+                <p>Add a shipment to see it here.</p>
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="card">
+
+            <h2>Quick Overview</h2>
+
+            <div class="inventory-list">
+
+                <div class="inventory-item">
+                    <span>Shipment Records</span>
+                    <span>{{ total }}</span>
+                </div>
+
+                <div class="inventory-item">
+                    <span>Active Shipments</span>
+                    <span>{{ in_transit }}</span>
+                </div>
+
+                <div class="inventory-item">
+                    <span>Completed</span>
+                    <span>{{ delivered }}</span>
+                </div>
+
+                <div class="inventory-item">
+                    <span>Attention Required</span>
+                    <span>{{ delayed }}</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

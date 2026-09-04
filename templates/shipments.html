@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipments | SupplyChain Tracker</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <i class="fa-solid fa-truck-fast"></i>
+        SupplyChain
+    </div>
+
+    <nav>
+        <a href="/" >
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/shipments" class="active">
+            <i class="fa-solid fa-box"></i>
+            <span>Shipments</span>
+        </a>
+
+        <a href="/track">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Track Shipment</span>
+        </a>
+
+        <a href="/inventory">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="/settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+</div>
+
+<div class="main-content">
+
+    <div class="topbar">
+        <div>
+            <h1>Shipments</h1>
+            <p>Manage and monitor all shipments</p>
+        </div>
+
+        <button class="add-btn" onclick="openModal()">
+            <i class="fa-solid fa-plus"></i>
+            Add Shipment
+        </button>
+    </div>
+
+    <div class="page-panel">
+
+        {% if shipments %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tracking ID</th>
+                    <th>Customer</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for shipment in shipments %}
+                <tr>
+                    <td><strong>{{ shipment["tracking_id"] }}</strong></td>
+                    <td>{{ shipment["customer"] }}</td>
+                    <td>{{ shipment["origin"] }}</td>
+                    <td>{{ shipment["destination"] }}</td>
+
+                    <td>
+                        <span class="status
+                            {% if shipment['status'] == 'In Transit' %}
+                                in-transit
+                            {% elif shipment['status'] == 'Delivered' %}
+                                delivered
+                            {% elif shipment['status'] == 'Delayed' %}
+                                delayed
+                            {% else %}
+                                pending
+                            {% endif %}
+                        ">
+                            {{ shipment["status"] }}
+                        </span>
+                    </td>
+
+                    <td>{{ shipment["date"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>No shipments found</h3>
+            <p>Add your first shipment to get started.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="modal" id="shipmentModal">
+
+    <div class="modal-content">
+
+        <h2>Add New Shipment</h2>
+
+        <form action="/add-shipment" method="POST">
+
+            <input
+                type="text"
+                name="tracking_id"
+                placeholder="Tracking ID"
+                required
+            >
+
+            <input
+                type="text"
+                name="customer"
+                placeholder="Customer Name"
+                required
+            >
+
+            <input
+                type="text"
+                name="origin"
+                placeholder="Origin"
+                required
+            >
+
+            <input
+                type="text"
+                name="destination"
+                placeholder="Destination"
+                required
+            >
+
+            <select name="status" required>
+                <option value="">Select Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Delayed">Delayed</option>
+            </select>
+
+            <input
+                type="date"
+                name="date"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-shipment-btn">
+                    Add Shipment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function openModal() {
+    document.getElementById("shipmentModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("shipmentModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById("shipmentModal");
+
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+</script>
+
+</body>
+</html>

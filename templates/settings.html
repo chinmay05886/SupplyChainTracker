@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SupplyChain Tracker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="bi bi-box-seam"></i>
+            <span>SupplyChain</span>
+        </div>
+
+        <nav>
+
+            <a href="/">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
+
+            <a href="/shipments">
+                <i class="bi bi-truck"></i>
+                Shipments
+            </a>
+
+            <a href="/track">
+                <i class="bi bi-search"></i>
+                Track Shipment
+            </a>
+
+            <a href="/inventory">
+                <i class="bi bi-boxes"></i>
+                Inventory
+            </a>
+
+            <a href="/settings" class="active">
+                <i class="bi bi-gear"></i>
+                Settings
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Settings</h1>
+                <p>Manage system preferences</p>
+            </div>
+
+        </header>
+
+
+        <section class="content-grid">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>
+                        <i class="bi bi-sliders"></i>
+                        System Settings
+                    </h3>
+                </div>
+
+                <div class="settings-form">
+
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text"
+                               value="SupplyChain Logistics">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Default Shipment Status</label>
+
+                        <select>
+                            <option>In Transit</option>
+                            <option>Delivered</option>
+                            <option>Delayed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notification Preference</label>
+
+                        <select>
+                            <option>Email Notifications</option>
+                            <option>Browser Notifications</option>
+                            <option>Disabled</option>
+                        </select>
+                    </div>
+
+                    <button class="save-shipment-btn"
+                            onclick="alert('Settings saved successfully!')">
+                        <i class="bi bi-check-circle"></i>
+                        Save Settings
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>
+                        <i class="bi bi-info-circle"></i>
+                        System Information
+                    </h3>
+                </div>
+
+                <div class="settings-info">
+
+                    <div>
+                        <strong>Application:</strong>
+                        SupplyChain Tracker
+                    </div>
+
+                    <div>
+                        <strong>Version:</strong>
+                        1.0.0
+                    </div>
+
+                    <div>
+                        <strong>Backend:</strong>
+                        Python Flask
+                    </div>
+
+                    <div>
+                        <strong>Storage:</strong>
+                        Browser Local Storage
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
