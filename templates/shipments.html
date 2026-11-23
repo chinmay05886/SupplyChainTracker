@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Shipments | SupplyChain Tracker</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
 </head>
 
 <body>
 
+
 <div class="sidebar">
+
     <div class="logo">
         <i class="fa-solid fa-truck-fast"></i>
-        SupplyChain
+        <span>SupplyChain</span>
     </div>
 
     <nav>
-        <a href="/" >
+
+        <a href="/">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
         </a>
@@ -45,75 +56,281 @@
             <i class="fa-solid fa-gear"></i>
             <span>Settings</span>
         </a>
+
     </nav>
+
 </div>
+
 
 <div class="main-content">
 
     <div class="topbar">
+
         <div>
+
             <h1>Shipments</h1>
-            <p>Manage and monitor all shipments</p>
+
+            <p>
+                Manage, search and update shipment records
+            </p>
+
         </div>
 
-        <button class="add-btn" onclick="openModal()">
+        <button
+            class="add-btn"
+            onclick="openModal('shipmentModal')"
+        >
+
             <i class="fa-solid fa-plus"></i>
+
             Add Shipment
+
         </button>
+
     </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert {{ category }}">
+
+                    <i class="fa-solid
+                    {% if category == 'success' %}
+                        fa-circle-check
+                    {% else %}
+                        fa-circle-exclamation
+                    {% endif %}
+                    "></i>
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <div class="filter-panel">
+
+        <form method="GET" class="filter-form">
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search tracking ID, customer, origin or destination"
+                >
+
+            </div>
+
+
+            <select name="status">
+
+                <option value="">All Statuses</option>
+
+                <option
+                    value="Pending"
+                    {% if selected_status == "Pending" %}selected{% endif %}
+                >
+                    Pending
+                </option>
+
+                <option
+                    value="In Transit"
+                    {% if selected_status == "In Transit" %}selected{% endif %}
+                >
+                    In Transit
+                </option>
+
+                <option
+                    value="Delivered"
+                    {% if selected_status == "Delivered" %}selected{% endif %}
+                >
+                    Delivered
+                </option>
+
+                <option
+                    value="Delayed"
+                    {% if selected_status == "Delayed" %}selected{% endif %}
+                >
+                    Delayed
+                </option>
+
+            </select>
+
+
+            <button type="submit" class="filter-btn">
+                <i class="fa-solid fa-filter"></i>
+                Filter
+            </button>
+
+
+            <a href="/shipments" class="clear-btn">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
 
     <div class="page-panel">
 
+        <div class="panel-header">
+
+            <div>
+
+                <h2>Shipment Records</h2>
+
+                <span>
+                    {{ shipments|length }} record(s) found
+                </span>
+
+            </div>
+
+        </div>
+
+
         {% if shipments %}
 
-        <table>
-            <thead>
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
                 <tr>
+
                     <th>Tracking ID</th>
                     <th>Customer</th>
                     <th>Origin</th>
                     <th>Destination</th>
                     <th>Status</th>
                     <th>Date</th>
-                </tr>
-            </thead>
+                    <th>Actions</th>
 
-            <tbody>
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
                 {% for shipment in shipments %}
+
                 <tr>
-                    <td><strong>{{ shipment["tracking_id"] }}</strong></td>
-                    <td>{{ shipment["customer"] }}</td>
-                    <td>{{ shipment["origin"] }}</td>
-                    <td>{{ shipment["destination"] }}</td>
 
                     <td>
-                        <span class="status
-                            {% if shipment['status'] == 'In Transit' %}
-                                in-transit
-                            {% elif shipment['status'] == 'Delivered' %}
-                                delivered
-                            {% elif shipment['status'] == 'Delayed' %}
-                                delayed
-                            {% else %}
-                                pending
-                            {% endif %}
-                        ">
-                            {{ shipment["status"] }}
-                        </span>
+                        <strong>
+                            {{ shipment["tracking_id"] }}
+                        </strong>
                     </td>
 
-                    <td>{{ shipment["date"] }}</td>
+                    <td>
+                        {{ shipment["customer"] }}
+                    </td>
+
+                    <td>
+                        {{ shipment["origin"] }}
+                    </td>
+
+                    <td>
+                        {{ shipment["destination"] }}
+                    </td>
+
+                    <td>
+
+                        <span class="status
+                        {% if shipment['status'] == 'In Transit' %}
+                            in-transit
+                        {% elif shipment['status'] == 'Delivered' %}
+                            delivered
+                        {% elif shipment['status'] == 'Delayed' %}
+                            delayed
+                        {% else %}
+                            pending
+                        {% endif %}
+                        ">
+
+                            {{ shipment["status"] }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        {{ shipment["date"] }}
+                    </td>
+
+                    <td>
+
+                        <div class="action-group">
+
+                            <button
+                                class="icon-btn"
+                                title="Update status"
+                                onclick="openStatusModal(
+                                    '{{ shipment["id"] }}',
+                                    '{{ shipment["status"] }}'
+                                )"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+
+                            <form
+                                action="{{ url_for('delete_shipment', shipment_id=shipment['id']) }}"
+                                method="POST"
+                                onsubmit="return confirmDelete('shipment')"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="icon-btn delete"
+                                    title="Delete shipment"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
                 </tr>
+
                 {% endfor %}
-            </tbody>
-        </table>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
         {% else %}
 
         <div class="empty-state">
+
             <i class="fa-solid fa-box-open"></i>
+
             <h3>No shipments found</h3>
-            <p>Add your first shipment to get started.</p>
+
+            <p>
+                Try changing your search or add a new shipment.
+            </p>
+
         </div>
 
         {% endif %}
@@ -122,68 +339,140 @@
 
 </div>
 
+
 <div class="modal" id="shipmentModal">
 
     <div class="modal-content">
 
-        <h2>Add New Shipment</h2>
+        <div class="modal-header">
 
-        <form action="/add-shipment" method="POST">
+            <div>
+                <h2>Add New Shipment</h2>
+                <p>Create a shipment tracking record</p>
+            </div>
 
-            <input
-                type="text"
-                name="tracking_id"
-                placeholder="Tracking ID"
-                required
+            <button
+                class="close-btn"
+                onclick="closeModal('shipmentModal')"
             >
+                ×
+            </button>
 
-            <input
-                type="text"
-                name="customer"
-                placeholder="Customer Name"
-                required
-            >
+        </div>
 
-            <input
-                type="text"
-                name="origin"
-                placeholder="Origin"
-                required
-            >
 
-            <input
-                type="text"
-                name="destination"
-                placeholder="Destination"
-                required
-            >
+        <form
+            action="/add-shipment"
+            method="POST"
+            onsubmit="return validateShipmentForm()"
+        >
 
-            <select name="status" required>
-                <option value="">Select Status</option>
-                <option value="Pending">Pending</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Delayed">Delayed</option>
-            </select>
+            <div class="form-grid">
 
-            <input
-                type="date"
-                name="date"
-                required
-            >
+                <div class="form-group">
+
+                    <label>Tracking ID</label>
+
+                    <input
+                        type="text"
+                        name="tracking_id"
+                        placeholder="SC1001"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Customer Name</label>
+
+                    <input
+                        type="text"
+                        name="customer"
+                        placeholder="Customer name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Origin</label>
+
+                    <input
+                        type="text"
+                        name="origin"
+                        placeholder="Mumbai"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Destination</label>
+
+                    <input
+                        type="text"
+                        name="destination"
+                        placeholder="Pune"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Status</label>
+
+                    <select name="status" required>
+
+                        <option value="">Select Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Delayed">Delayed</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Shipment Date</label>
+
+                    <input
+                        type="date"
+                        name="date"
+                        id="shipmentDate"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
 
             <div class="modal-actions">
 
                 <button
                     type="button"
                     class="cancel-btn"
-                    onclick="closeModal()">
+                    onclick="closeModal('shipmentModal')"
+                >
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    class="save-shipment-btn">
+                    class="save-shipment-btn"
+                >
+                    <i class="fa-solid fa-plus"></i>
                     Add Shipment
                 </button>
 
@@ -195,23 +484,88 @@
 
 </div>
 
-<script>
-function openModal() {
-    document.getElementById("shipmentModal").style.display = "flex";
-}
 
-function closeModal() {
-    document.getElementById("shipmentModal").style.display = "none";
-}
+<div class="modal" id="statusModal">
 
-window.onclick = function(event) {
-    const modal = document.getElementById("shipmentModal");
+    <div class="modal-content small-modal">
 
-    if (event.target === modal) {
-        closeModal();
-    }
-}
-</script>
+        <div class="modal-header">
+
+            <div>
+                <h2>Update Status</h2>
+                <p>Change shipment status</p>
+            </div>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('statusModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            id="statusForm"
+            method="POST"
+        >
+
+            <div class="form-group">
+
+                <label>Shipment Status</label>
+
+                <select name="status" id="statusSelect">
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="In Transit">
+                        In Transit
+                    </option>
+
+                    <option value="Delivered">
+                        Delivered
+                    </option>
+
+                    <option value="Delayed">
+                        Delayed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeModal('statusModal')"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-shipment-btn"
+                >
+                    Update Status
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
+
 </html>

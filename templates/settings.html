@@ -1,158 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - SupplyChain Tracker</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Settings | SupplyChain Tracker</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
 </head>
 
 <body>
 
-    <aside class="sidebar">
 
-        <div class="logo">
-            <i class="bi bi-box-seam"></i>
-            <span>SupplyChain</span>
+<div class="sidebar">
+
+    <div class="logo">
+        <i class="fa-solid fa-truck-fast"></i>
+        <span>SupplyChain</span>
+    </div>
+
+    <nav>
+
+        <a href="/">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/shipments">
+            <i class="fa-solid fa-box"></i>
+            <span>Shipments</span>
+        </a>
+
+        <a href="/track">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Track Shipment</span>
+        </a>
+
+        <a href="/inventory">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Inventory</span>
+        </a>
+
+        <a href="/settings" class="active">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+</div>
+
+
+<div class="main-content">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Settings</h1>
+
+            <p>
+                Manage application information and preferences
+            </p>
+
         </div>
 
-        <nav>
-
-            <a href="/">
-                <i class="bi bi-grid-1x2-fill"></i>
-                Dashboard
-            </a>
-
-            <a href="/shipments">
-                <i class="bi bi-truck"></i>
-                Shipments
-            </a>
-
-            <a href="/track">
-                <i class="bi bi-search"></i>
-                Track Shipment
-            </a>
-
-            <a href="/inventory">
-                <i class="bi bi-boxes"></i>
-                Inventory
-            </a>
-
-            <a href="/settings" class="active">
-                <i class="bi bi-gear"></i>
-                Settings
-            </a>
-
-        </nav>
-
-    </aside>
+    </div>
 
 
-    <main class="main-content">
+    <div class="content-grid">
 
-        <header class="topbar">
+        <div class="card">
 
-            <div>
-                <h1>Settings</h1>
-                <p>Manage system preferences</p>
-            </div>
+            <div class="card-header">
 
-        </header>
-
-
-        <section class="content-grid">
-
-            <div class="card">
-
-                <div class="card-header">
-                    <h3>
-                        <i class="bi bi-sliders"></i>
-                        System Settings
-                    </h3>
-                </div>
-
-                <div class="settings-form">
-
-                    <div class="form-group">
-                        <label>Company Name</label>
-                        <input type="text"
-                               value="SupplyChain Logistics">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Default Shipment Status</label>
-
-                        <select>
-                            <option>In Transit</option>
-                            <option>Delivered</option>
-                            <option>Delayed</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Notification Preference</label>
-
-                        <select>
-                            <option>Email Notifications</option>
-                            <option>Browser Notifications</option>
-                            <option>Disabled</option>
-                        </select>
-                    </div>
-
-                    <button class="save-shipment-btn"
-                            onclick="alert('Settings saved successfully!')">
-                        <i class="bi bi-check-circle"></i>
-                        Save Settings
-                    </button>
-
-                </div>
+                <h2>
+                    <i class="fa-solid fa-sliders"></i>
+                    System Settings
+                </h2>
 
             </div>
 
 
-            <div class="card">
+            <div class="settings-form">
 
-                <div class="card-header">
-                    <h3>
-                        <i class="bi bi-info-circle"></i>
-                        System Information
-                    </h3>
+                <div class="form-group">
+
+                    <label>Company Name</label>
+
+                    <input
+                        type="text"
+                        value="SupplyChain Logistics"
+                    >
+
                 </div>
 
-                <div class="settings-info">
 
-                    <div>
-                        <strong>Application:</strong>
-                        SupplyChain Tracker
-                    </div>
+                <div class="form-group">
 
-                    <div>
-                        <strong>Version:</strong>
-                        1.0.0
-                    </div>
+                    <label>Default Shipment Status</label>
 
-                    <div>
-                        <strong>Backend:</strong>
-                        Python Flask
-                    </div>
+                    <select>
 
-                    <div>
-                        <strong>Storage:</strong>
-                        Browser Local Storage
-                    </div>
+                        <option>
+                            Pending
+                        </option>
 
+                        <option selected>
+                            In Transit
+                        </option>
+
+                        <option>
+                            Delivered
+                        </option>
+
+                        <option>
+                            Delayed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Notification Preference</label>
+
+                    <select>
+
+                        <option>
+                            Email Notifications
+                        </option>
+
+                        <option>
+                            Browser Notifications
+                        </option>
+
+                        <option>
+                            Disabled
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="save-shipment-btn"
+                    onclick="showSettingsMessage()"
+                >
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Save Settings
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h2>
+                    <i class="fa-solid fa-circle-info"></i>
+                    System Information
+                </h2>
+
+            </div>
+
+
+            <div class="settings-info">
+
+                <div>
+                    <strong>Application:</strong>
+                    SupplyChain Tracker
+                </div>
+
+                <div>
+                    <strong>Version:</strong>
+                    2.0.0
+                </div>
+
+                <div>
+                    <strong>Backend:</strong>
+                    Python Flask
+                </div>
+
+                <div>
+                    <strong>Database:</strong>
+                    SQLite
+                </div>
+
+                <div>
+                    <strong>Frontend:</strong>
+                    HTML, CSS & JavaScript
+                </div>
+
+                <div>
+                    <strong>Status:</strong>
+                    <span class="status delivered">
+                        Operational
+                    </span>
                 </div>
 
             </div>
 
-        </section>
+        </div>
 
-    </main>
+    </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
+
 </html>

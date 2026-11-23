@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Inventory | SupplyChain Tracker</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
 </head>
 
 <body>
+
 
 <div class="sidebar">
 
     <div class="logo">
         <i class="fa-solid fa-truck-fast"></i>
-        SupplyChain
+        <span>SupplyChain</span>
     </div>
 
     <nav>
@@ -53,92 +61,257 @@
 
 </div>
 
+
 <div class="main-content">
 
     <div class="topbar">
 
         <div>
+
             <h1>Inventory</h1>
-            <p>Monitor stock levels and inventory items</p>
+
+            <p>
+                Monitor stock levels and manage inventory
+            </p>
+
         </div>
 
-        <button class="add-btn" onclick="openInventoryModal()">
+        <button
+            class="add-btn"
+            onclick="openModal('inventoryModal')"
+        >
+
             <i class="fa-solid fa-plus"></i>
+
             Add Item
+
         </button>
 
     </div>
 
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert {{ category }}">
+
+                    <i class="fa-solid
+                    {% if category == 'success' %}
+                        fa-circle-check
+                    {% else %}
+                        fa-circle-exclamation
+                    {% endif %}
+                    "></i>
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
     <div class="stats-grid">
 
         <div class="stat-card">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            <h3>Total Items</h3>
-            <div class="number">{{ total_items }}</div>
+
+            <div class="stat-icon blue">
+                <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+
+            <h3>Total Inventory Units</h3>
+
+            <div class="number">
+                {{ total_items }}
+            </div>
+
         </div>
 
-        <div class="stat-card">
-            <i class="fa-solid fa-circle-check"></i>
-            <h3>In Stock</h3>
-            <div class="number">{{ in_stock }}</div>
-        </div>
 
         <div class="stat-card">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <h3>Low Stock</h3>
-            <div class="number">{{ low_stock }}</div>
+
+            <div class="stat-icon green">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <h3>In Stock Items</h3>
+
+            <div class="number">
+                {{ in_stock }}
+            </div>
+
         </div>
 
+
         <div class="stat-card">
-            <i class="fa-solid fa-warehouse"></i>
+
+            <div class="stat-icon red">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h3>Low Stock Items</h3>
+
+            <div class="number">
+                {{ low_stock }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                <i class="fa-solid fa-warehouse"></i>
+            </div>
+
             <h3>Inventory Records</h3>
-            <div class="number">{{ inventory_items|length }}</div>
+
+            <div class="number">
+                {{ inventory_items|length }}
+            </div>
+
         </div>
 
     </div>
 
+
+    <div class="filter-panel">
+
+        <form method="GET" class="filter-form">
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search item or category"
+                >
+
+            </div>
+
+
+            <button type="submit" class="filter-btn">
+
+                <i class="fa-solid fa-filter"></i>
+
+                Search
+
+            </button>
+
+
+            <a href="/inventory" class="clear-btn">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+
     <div class="page-panel">
 
-        <h2>Inventory Overview</h2>
+        <div class="panel-header">
+
+            <div>
+
+                <h2>Inventory Overview</h2>
+
+                <span>
+                    {{ inventory_items|length }} record(s) found
+                </span>
+
+            </div>
+
+        </div>
+
 
         {% if inventory_items %}
 
-        <table>
+        <div class="table-wrapper">
 
-            <thead>
+            <table>
+
+                <thead>
+
                 <tr>
+
                     <th>Item</th>
                     <th>Category</th>
                     <th>Quantity</th>
                     <th>Status</th>
-                </tr>
-            </thead>
+                    <th>Action</th>
 
-            <tbody>
+                </tr>
+
+                </thead>
+
+
+                <tbody>
 
                 {% for item in inventory_items %}
 
                 <tr>
 
                     <td>
-                        <strong>{{ item["item_name"] }}</strong>
+                        <strong>
+                            {{ item["item_name"] }}
+                        </strong>
                     </td>
 
-                    <td>{{ item["category"] }}</td>
+                    <td>
+                        {{ item["category"] }}
+                    </td>
 
-                    <td>{{ item["quantity"] }}</td>
+                    <td>
+                        <strong>
+                            {{ item["quantity"] }}
+                        </strong>
+                    </td>
 
                     <td>
 
                         <span class="status
-                            {% if item['status'] == 'In Stock' %}
-                                delivered
-                            {% else %}
-                                delayed
-                            {% endif %}
+                        {% if item['status'] == 'In Stock' %}
+                            delivered
+                        {% else %}
+                            delayed
+                        {% endif %}
                         ">
+
                             {{ item["status"] }}
+
                         </span>
+
+                    </td>
+
+                    <td>
+
+                        <form
+                            action="{{ url_for('delete_inventory', item_id=item['id']) }}"
+                            method="POST"
+                            onsubmit="return confirmDelete('inventory item')"
+                        >
+
+                            <button
+                                type="submit"
+                                class="icon-btn delete"
+                                title="Delete item"
+                            >
+
+                                <i class="fa-solid fa-trash"></i>
+
+                            </button>
+
+                        </form>
 
                     </td>
 
@@ -146,9 +319,11 @@
 
                 {% endfor %}
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
         {% else %}
 
@@ -156,9 +331,11 @@
 
             <i class="fa-solid fa-box-open"></i>
 
-            <h3>No Inventory Items</h3>
+            <h3>No inventory items found</h3>
 
-            <p>Add your first inventory item to start tracking stock.</p>
+            <p>
+                Add an inventory item to start monitoring stock.
+            </p>
 
         </div>
 
@@ -171,47 +348,97 @@
 
 <div class="modal" id="inventoryModal">
 
-    <div class="modal-content">
+    <div class="modal-content small-modal">
 
-        <h2>Add Inventory Item</h2>
+        <div class="modal-header">
 
-        <form action="/add-inventory" method="POST">
+            <div>
 
-            <input
-                type="text"
-                name="item_name"
-                placeholder="Item Name"
-                required
+                <h2>Add Inventory Item</h2>
+
+                <p>
+                    Create a new inventory record
+                </p>
+
+            </div>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('inventoryModal')"
             >
+                ×
+            </button>
 
-            <input
-                type="text"
-                name="category"
-                placeholder="Category"
-                required
-            >
+        </div>
 
-            <input
-                type="number"
-                name="quantity"
-                placeholder="Quantity"
-                min="1"
-                required
-            >
+
+        <form
+            action="/add-inventory"
+            method="POST"
+        >
+
+            <div class="form-group">
+
+                <label>Item Name</label>
+
+                <input
+                    type="text"
+                    name="item_name"
+                    placeholder="Laptop"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Category</label>
+
+                <input
+                    type="text"
+                    name="category"
+                    placeholder="Electronics"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Quantity</label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    placeholder="50"
+                    required
+                >
+
+            </div>
+
 
             <div class="modal-actions">
 
                 <button
                     type="button"
                     class="cancel-btn"
-                    onclick="closeInventoryModal()">
+                    onclick="closeModal('inventoryModal')"
+                >
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    class="save-shipment-btn">
+                    class="save-shipment-btn"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
                     Add Item
+
                 </button>
 
             </div>
@@ -223,27 +450,8 @@
 </div>
 
 
-<script>
-
-function openInventoryModal() {
-    document.getElementById("inventoryModal").style.display = "flex";
-}
-
-function closeInventoryModal() {
-    document.getElementById("inventoryModal").style.display = "none";
-}
-
-window.onclick = function(event) {
-
-    const modal = document.getElementById("inventoryModal");
-
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-
-};
-
-</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
+
 </html>

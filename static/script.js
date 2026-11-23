@@ -1,100 +1,138 @@
-function openAddShipment() {
-    const modal = document.getElementById("shipmentModal");
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
 
     if (modal) {
         modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
     }
 }
 
-function closeAddShipment() {
-    const modal = document.getElementById("shipmentModal");
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
 
     if (modal) {
         modal.style.display = "none";
+        document.body.style.overflow = "";
     }
 }
 
-async function addShipment() {
-    const trackingId = document.getElementById("newTrackingId").value.trim();
-    const product = document.getElementById("newProduct").value.trim();
-    const destination = document.getElementById("newDestination").value.trim();
-    const status = document.getElementById("newStatus").value;
 
-    if (!trackingId || !product || !destination || !status) {
-        alert("Please fill in all fields.");
+window.addEventListener("click", function (event) {
+
+    if (event.target.classList.contains("modal")) {
+
+        event.target.style.display = "none";
+        document.body.style.overflow = "";
+
+    }
+
+});
+
+
+function openStatusModal(shipmentId, currentStatus) {
+
+    const modal = document.getElementById("statusModal");
+    const form = document.getElementById("statusForm");
+    const select = document.getElementById("statusSelect");
+
+    if (!modal || !form || !select) {
         return;
     }
 
-    try {
-        const response = await fetch("/api/shipments", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                tracking_id: trackingId,
-                product: product,
-                destination: destination,
-                status: status
-            })
-        });
+    form.action = "/update-shipment/" + shipmentId;
 
-        const data = await response.json();
+    select.value = currentStatus;
 
-        if (data.success) {
-            alert("Shipment added successfully!");
-
-            closeAddShipment();
-
-            document.getElementById("newTrackingId").value = "";
-            document.getElementById("newProduct").value = "";
-            document.getElementById("newDestination").value = "";
-            document.getElementById("newStatus").value = "In Transit";
-
-            location.reload();
-        } else {
-            alert(data.message);
-        }
-
-    } catch (error) {
-        alert("Unable to add shipment.");
-    }
+    openModal("statusModal");
 }
 
-function trackShipment() {
-    const input = document.getElementById("trackingInput");
-    const result = document.getElementById("trackingResult");
 
-    if (!input || !result) {
-        return;
-    }
+function confirmDelete(itemName) {
 
-    const trackingId = input.value.trim();
+    return confirm(
+        "Are you sure you want to delete this " +
+        itemName +
+        "?"
+    );
 
-    if (!trackingId) {
-        result.style.display = "block";
-        result.innerHTML = "Please enter a tracking ID.";
-        return;
-    }
-
-    fetch("/api/shipments/" + trackingId)
-        .then(response => response.json())
-        .then(data => {
-            result.style.display = "block";
-
-            if (data.success) {
-                result.innerHTML = `
-                    <strong>${data.shipment.tracking_id}</strong><br>
-                    Product: ${data.shipment.product}<br>
-                    Destination: ${data.shipment.destination}<br>
-                    Status: ${data.shipment.status}
-                `;
-            } else {
-                result.innerHTML = "Shipment not found.";
-            }
-        })
-        .catch(() => {
-            result.style.display = "block";
-            result.innerHTML = "Unable to track shipment.";
-        });
 }
+
+
+function validateShipmentForm() {
+
+    const trackingId =
+        document.querySelector(
+            'input[name="tracking_id"]'
+        ).value.trim();
+
+    if (trackingId.length < 3) {
+
+        alert(
+            "Tracking ID must contain at least 3 characters."
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+function showSettingsMessage() {
+
+    alert(
+        "Settings saved successfully!"
+    );
+
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const dateInput =
+        document.getElementById("shipmentDate");
+
+    if (dateInput && !dateInput.value) {
+
+        const today = new Date();
+
+        const year =
+            today.getFullYear();
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(2, "0");
+
+        dateInput.value =
+            `${year}-${month}-${day}`;
+
+    }
+
+});
+
+
+setTimeout(function () {
+
+    const alerts =
+        document.querySelectorAll(".alert");
+
+    alerts.forEach(function (alert) {
+
+        alert.style.opacity = "0";
+
+        setTimeout(function () {
+            alert.remove();
+        }, 300);
+
+    });
+
+}, 4000);
